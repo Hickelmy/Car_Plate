@@ -3,13 +3,11 @@ import {
   Box,
   TextField,
   Button,
-  Card,
-  CardContent,
   Typography,
   Grid,
   CircularProgress,
 } from "@mui/material";
-import axios from "axios";
+import CarDetails from "../../components/cardDetails";
 
 // Tipagem para os dados do formulário
 interface FormData {
@@ -49,48 +47,6 @@ const PlatesRegister: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  // Consulta a API para buscar informações do tipo de carro
-  const handleCarSearch = async () => {
-    if (!formData.carType) {
-      alert("Digite o nome do carro para pesquisar!");
-      return;
-    }
-
-    setIsLoadingCar(true);
-    setCarError(false);
-
-    try {
-      const response = await axios.get(`https://car-api2.p.rapidapi.com/api/car`, {
-        params: { query: formData.carType },
-        headers: {
-          "X-RapidAPI-Host": "car-api2.p.rapidapi.com",
-          "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY || "",
-        },
-      });
-
-      const car = response.data.results?.[0];
-      if (car) {
-        setCarData({
-          make: car.make,
-          model: car.model,
-          year: car.year,
-          engine: car.engine,
-          power: car.power,
-          image: car.image_url || "https://via.placeholder.com/300",
-        });
-      } else {
-        setCarData(null);
-        setCarError(true);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar o carro:", error);
-      setCarError(true);
-      setCarData(null);
-    } finally {
-      setIsLoadingCar(false);
-    }
   };
 
   // Submissão do formulário
@@ -158,7 +114,6 @@ const PlatesRegister: React.FC = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleCarSearch}
                 disabled={isLoadingCar}
               >
                 {isLoadingCar ? <CircularProgress size={20} /> : "Buscar"}
@@ -169,23 +124,14 @@ const PlatesRegister: React.FC = () => {
           {/* Coluna Direita: Dados da API */}
           <Grid item xs={12} md={6}>
             {carData ? (
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">
-                    {carData.make} {carData.model}
-                  </Typography>
-                  <Typography>Ano: {carData.year}</Typography>
-                  <Typography>Motor: {carData.engine}</Typography>
-                  <Typography>Potência: {carData.power}</Typography>
-                  <Box mt={2}>
-                    <img
-                      src={carData.image}
-                      alt={`${carData.make} ${carData.model}`}
-                      style={{ width: "100%", borderRadius: "8px" }}
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
+              <CarDetails
+                make={carData.make}
+                model={carData.model}
+                year={carData.year}
+                engine={carData.engine}
+                power={carData.power}
+                image={carData.image}
+              />
             ) : carError ? (
               <Typography color="error">
                 Não foi possível encontrar as especificações do carro.

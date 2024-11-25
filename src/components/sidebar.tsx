@@ -70,9 +70,28 @@ const Sidebar: React.FC = () => {
             <FaHistory /> Histórico de Placas
           </NavLink>
         </MenuItem>
+
+          <MenuItem>
+          <NavLink to="/capture">
+            <FaHistory /> Registrar Faces
+          </NavLink>
+        </MenuItem>
+
+          <MenuItem>
+          <NavLink to="/train">
+            <FaHistory /> Treinar Modelos
+          </NavLink>
+        </MenuItem>
+
+          <MenuItem>
+          <NavLink to="/recognize">
+            <FaHistory /> Reconhecer pessoas
+          </NavLink>
+        </MenuItem>
       </Menu>
     </SidebarContainer>
   );
 };
+
 
 export default Sidebar;
